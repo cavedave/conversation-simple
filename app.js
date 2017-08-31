@@ -16,6 +16,7 @@
 
 'use strict';
 
+var nodemailer = require('nodemailer'); // to send emails
 var express = require('express'); // app server
 var bodyParser = require('body-parser'); // parser for post requests
 var Conversation = require('watson-developer-cloud/conversation/v1'); // watson sdk
@@ -35,6 +36,23 @@ var conversation = new Conversation({
   // url: 'https://gateway.watsonplatform.net/conversation/api',
   version_date: Conversation.VERSION_DATE_2017_04_21
 });
+
+
+//email sending part
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'chatbot@gmail.com',
+    pass: ''
+  }
+});
+
+var mailOptions = {
+  from: 'chatbot@gmail.com',
+  to: 'receiver@email.com',
+  subject: 'Sending Email using Node.js',
+  text: 'That was easy!'
+};
 
 // Endpoint to be call from the client side
 app.post('/api/message', function(req, res) {
@@ -69,6 +87,24 @@ app.post('/api/message', function(req, res) {
  */
 function updateMessage(input, response) {
   var responseText = null;
+  
+  /*try and get the email true bit*/
+	
+	
+	if(response.context.email){
+		console.log('try find email');
+		console.log(response.context.email);
+	transporter.sendMail(mailOptions, function(error, info){
+		if (error) {
+		console.log(error);
+	} else {
+		console.log('Email sent: ' + info.response);
+	}
+});
+
+	}
+	/*end of send email bit*/
+  
   if (!response.output) {
     response.output = {};
   } else {
