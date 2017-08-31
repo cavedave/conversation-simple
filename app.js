@@ -92,8 +92,7 @@ function updateMessage(input, response) {
 	
 	
 	if(response.context.email){
-		console.log('try find email');
-		console.log(response.context.email);
+		response.context.email=null;//set send variable to null so we dont send email every time
 	transporter.sendMail(mailOptions, function(error, info){
 		if (error) {
 		console.log(error);
